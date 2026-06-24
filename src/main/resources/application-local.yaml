@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:library_lending_service;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: library_user
+    password: library_password
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        default_schema: public
+        dialect: org.hibernate.dialect.H2Dialect
+
+  liquibase:
+    enabled: false
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/local-data.sql
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+app:
+  rate-limit:
+    enabled: false
+  openapi:
+    server-url: http://localhost:8090

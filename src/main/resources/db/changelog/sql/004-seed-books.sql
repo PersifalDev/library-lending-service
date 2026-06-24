@@ -1,0 +1,28 @@
+INSERT INTO books (title, author, isbn, created_at, updated_at)
+VALUES
+    ('Clean Code', 'Robert C. Martin', '9780132350884', now(), now()),
+    ('Effective Java', 'Joshua Bloch', '9780134685991', now(), now()),
+    ('Design Patterns', 'Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', '9780201633610', now(), now()),
+    ('Domain-Driven Design', 'Eric Evans', '9780321125217', now(), now()),
+    ('Refactoring', 'Martin Fowler', '9780134757599', now(), now()),
+    ('Working Effectively with Legacy Code', 'Michael Feathers', '9780131177055', now(), now()),
+    ('Java Concurrency in Practice', 'Brian Goetz', '9780321349606', now(), now()),
+    ('Spring in Action', 'Craig Walls', '9781617294945', now(), now()),
+    ('Hibernate Tips', 'Thorben Janssen', '9781544869179', now(), now()),
+    ('High Performance Java Persistence', 'Vlad Mihalcea', '9789730228236', now(), now()),
+    ('SQL Performance Explained', 'Markus Winand', '9783950307825', now(), now()),
+    ('Database Internals', 'Alex Petrov', '9781492040347', now(), now()),
+    ('Release It!', 'Michael Nygard', '9781680502398', now(), now()),
+    ('Building Microservices', 'Sam Newman', '9781492034025', now(), now()),
+    ('Microservices Patterns', 'Chris Richardson', '9781617294549', now(), now()),
+    ('REST in Practice', 'Jim Webber, Savas Parastatidis, Ian Robinson', '9780596805821', now(), now()),
+    ('Head First Design Patterns', 'Eric Freeman, Elisabeth Robson', '9781492078005', now(), now()),
+    ('The Pragmatic Programmer', 'David Thomas, Andrew Hunt', '9780135957059', now(), now()),
+    ('Test Driven Development', 'Kent Beck', '9780321146533', now(), now()),
+    ('Patterns of Enterprise Application Architecture', 'Martin Fowler', '9780321127426', now(), now()),
+    ('Continuous Delivery', 'Jez Humble, David Farley', '9780321601919', now(), now()),
+    ('Kubernetes in Action', 'Marko Luksa', '9781617293726', now(), now()),
+    ('Docker Deep Dive', 'Nigel Poulton', '9781521822807', now(), now()),
+    ('System Design Interview', 'Alex Xu', '9781736049112', now(), now()),
+    ('Computer Systems: A Programmer''s Perspective', 'Randal Bryant, David O''Hallaron', '9780134092669', now(), now())
+ON CONFLICT (isbn) DO NOTHING;

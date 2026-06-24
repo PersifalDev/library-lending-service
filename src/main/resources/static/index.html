@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library Lending Service</title>
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --line: #d8dee6;
+            --text: #18212f;
+            --muted: #627084;
+            --primary: #1d4ed8;
+            --secondary: #45556c;
+            --danger: #b42318;
+            --ok: #067647;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: var(--surface);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .topbar {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+
+        h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 18px 20px 28px;
+        }
+
+        section {
+            background: var(--surface);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 16px 0;
+            margin-bottom: 16px;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px;
+            background: #fbfcfe;
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: grid;
+            gap: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        input, button {
+            width: 100%;
+            min-height: 38px;
+            padding: 9px 10px;
+            border-radius: 6px;
+            border: 1px solid #c8d0dc;
+            font-size: 14px;
+            background: #ffffff;
+            color: var(--text);
+        }
+
+        button {
+            border: 0;
+            background: var(--primary);
+            color: #ffffff;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        button.secondary {
+            background: var(--secondary);
+        }
+
+        button.danger {
+            background: var(--danger);
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+
+        .status {
+            color: var(--muted);
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .status strong {
+            color: var(--text);
+        }
+
+        .result-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr);
+            gap: 12px;
+        }
+
+        .result-box {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .result-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            min-width: 56px;
+            text-align: center;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .badge.ok {
+            background: #dcfae6;
+            color: var(--ok);
+        }
+
+        .badge.error {
+            background: #fee4e2;
+            color: var(--danger);
+        }
+
+        pre {
+            min-height: 260px;
+            max-height: 520px;
+            overflow: auto;
+            margin: 0;
+            padding: 12px;
+            background: #111827;
+            color: #e5e7eb;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #edf0f4;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            color: var(--muted);
+            font-weight: 700;
+            background: #f8fafc;
+        }
+
+        .table-wrap {
+            max-height: 520px;
+            overflow: auto;
+        }
+
+        @media (max-width: 820px) {
+            .topbar {
+                display: grid;
+            }
+
+            .status {
+                text-align: left;
+            }
+
+            .result-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="topbar">
+        <h1>Library Lending Service</h1>
+        <div class="status" id="authStatus">JWT is not set</div>
+    </div>
+</header>
+
+<main>
+    <section>
+        <h2>Authentication</h2>
+        <div class="panel-grid">
+            <div class="panel">
+                <h3>Sign in</h3>
+                <div class="fields">
+                    <label>Login
+                        <input id="login" value="admin">
+                    </label>
+                    <label>Password
+                        <input id="password" value="admin_password" type="password">
+                    </label>
+                </div>
+                <div class="actions">
+                    <button onclick="authenticate()">Get JWT</button>
+                    <button class="secondary" onclick="authDebug()">Current auth</button>
+                    <button class="danger" onclick="clearJwt()">Clear JWT</button>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Register client</h3>
+                <div class="fields">
+                    <label>Login
+                        <input id="registerLogin" value="webuser01">
+                    </label>
+                    <label>Password
+                        <input id="registerPassword" value="web_password">
+                    </label>
+                    <label>Full name
+                        <input id="registerFullName" value="Web User">
+                    </label>
+                    <label>Birth date
+                        <input id="registerBirthDate" value="2000-01-01" type="date">
+                    </label>
+                </div>
+                <button onclick="registerClient()">Register</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Books</h2>
+        <div class="panel-grid">
+            <div class="panel">
+                <h3>Search</h3>
+                <div class="fields">
+                    <label>Title
+                        <input id="bookSearchTitle" value="">
+                    </label>
+                    <label>Author
+                        <input id="bookSearchAuthor" value="">
+                    </label>
+                    <label>Page
+                        <input id="bookPageNumber" value="0" type="number" min="0">
+                    </label>
+                    <label>Size
+                        <input id="bookPageSize" value="10" type="number" min="1" max="100">
+                    </label>
+                </div>
+                <button onclick="searchBooks()">Search books</button>
+            </div>
+            <div class="panel">
+                <h3>By ID</h3>
+                <div class="fields">
+                    <label>Book ID
+                        <input id="bookId" value="1" type="number" min="1">
+                    </label>
+                </div>
+                <button class="secondary" onclick="getBookById()">Book by ID</button>
+            </div>
+            <div class="panel">
+                <h3>Create / update</h3>
+                <div class="fields">
+                    <label>ID for update
+                        <input id="bookUpdateId" value="1" type="number" min="1">
+                    </label>
+                    <label>Title
+                        <input id="bookTitle" value="Clean Code">
+                    </label>
+                    <label>Author
+                        <input id="bookAuthor" value="Robert C. Martin">
+                    </label>
+                    <label>ISBN
+                        <input id="bookIsbn" value="9780132350884">
+                    </label>
+                </div>
+                <div class="actions">
+                    <button onclick="createBook()">Create book</button>
+                    <button class="secondary" onclick="updateBook()">Update book</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Clients</h2>
+        <div class="panel-grid">
+            <div class="panel">
+                <h3>Search</h3>
+                <div class="fields">
+                    <label>Full name
+                        <input id="clientSearchFullName" value="">
+                    </label>
+                    <label>Page
+                        <input id="clientPageNumber" value="0" type="number" min="0">
+                    </label>
+                    <label>Size
+                        <input id="clientPageSize" value="10" type="number" min="1" max="100">
+                    </label>
+                </div>
+                <button onclick="searchClients()">Search clients</button>
+            </div>
+            <div class="panel">
+                <h3>By ID</h3>
+                <div class="fields">
+                    <label>Client ID
+                        <input id="clientId" value="1" type="number" min="1">
+                    </label>
+                </div>
+                <button class="secondary" onclick="getClientById()">Client by ID</button>
+            </div>
+            <div class="panel">
+                <h3>Update</h3>
+                <div class="fields">
+                    <label>Client ID
+                        <input id="clientUpdateId" value="1" type="number" min="1">
+                    </label>
+                    <label>Full name
+                        <input id="clientFullName" value="Ivan Petrov">
+                    </label>
+                    <label>Birth date
+                        <input id="clientBirthDate" value="1998-03-14" type="date">
+                    </label>
+                </div>
+                <button class="secondary" onclick="updateClient()">Update client</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Lendings</h2>
+        <div class="panel-grid">
+            <div class="panel">
+                <h3>Active readers</h3>
+                <div class="fields">
+                    <label>Page
+                        <input id="lendingPageNumber" value="0" type="number" min="0">
+                    </label>
+                    <label>Size
+                        <input id="lendingPageSize" value="10" type="number" min="1" max="100">
+                    </label>
+                </div>
+                <button onclick="activeReaders()">Active readers</button>
+            </div>
+            <div class="panel">
+                <h3>By ID / return</h3>
+                <div class="fields">
+                    <label>Lending ID
+                        <input id="lendingId" value="1" type="number" min="1">
+                    </label>
+                </div>
+                <div class="actions">
+                    <button class="secondary" onclick="getLendingById()">Lending by ID</button>
+                    <button onclick="returnLending()">Return book</button>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Create</h3>
+                <div class="fields">
+                    <label>Client ID
+                        <input id="lendingClientId" value="1" type="number" min="1">
+                    </label>
+                    <label>Book ID
+                        <input id="lendingBookId" value="1" type="number" min="1">
+                    </label>
+                    <label>Taken at
+                        <input id="lendingTakenAt" value="" placeholder="2026-06-24T10:00:00">
+                    </label>
+                </div>
+                <button onclick="createLending()">Create lending</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Response</h2>
+        <div class="result-layout">
+            <div class="result-box">
+                <div class="result-head">
+                    <span id="lastRequest">No request yet</span>
+                    <span class="badge" id="lastStatus">-</span>
+                </div>
+                <div class="table-wrap" id="resultView"></div>
+            </div>
+            <div class="result-box">
+                <div class="result-head">
+                    <span>JSON</span>
+                    <span id="duration">-</span>
+                </div>
+                <pre id="output">{}</pre>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    let jwt = localStorage.getItem('libraryJwt') || '';
+    updateStatus();
+
+    function valueOf(id) {
+        return document.getElementById(id).value.trim();
+    }
+
+    function updateStatus(extra) {
+        const tokenStatus = jwt ? 'JWT is set' : 'JWT is not set';
+        document.getElementById('authStatus').innerHTML = '<strong>' + tokenStatus + '</strong>' + (extra ? ' | ' + extra : '');
+    }
+
+    function setBusy(busy) {
+        document.querySelectorAll('button').forEach(button => button.disabled = busy);
+    }
+
+    function print(method, path, status, data, elapsedMs) {
+        const badge = document.getElementById('lastStatus');
+        document.getElementById('lastRequest').textContent = method + ' ' + path;
+        document.getElementById('duration').textContent = elapsedMs + ' ms';
+        badge.textContent = String(status);
+        badge.className = status >= 200 && status < 300 ? 'badge ok' : 'badge error';
+        document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        renderResult(data);
+    }
+
+    function renderResult(data) {
+        const target = document.getElementById('resultView');
+        const rows = Array.isArray(data) ? data : (data && Array.isArray(data.content) ? data.content : null);
+        if (rows) {
+            target.innerHTML = renderTable(rows);
+            return;
+        }
+        if (data && data.error) {
+            target.innerHTML = renderObject(data.error);
+            return;
+        }
+        target.innerHTML = renderObject(data);
+    }
+
+    function renderTable(rows) {
+        if (!rows.length) {
+            return '<table><tbody><tr><td>No rows</td></tr></tbody></table>';
+        }
+        const columns = Object.keys(flatten(rows[0])).slice(0, 8);
+        const head = columns.map(column => '<th>' + escapeHtml(column) + '</th>').join('');
+        const body = rows.map(row => {
+            const flat = flatten(row);
+            return '<tr>' + columns.map(column => '<td>' + escapeHtml(formatValue(flat[column])) + '</td>').join('') + '</tr>';
+        }).join('');
+        return '<table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table>';
+    }
+
+    function renderObject(data) {
+        if (!data || typeof data !== 'object') {
+            return '<table><tbody><tr><td>' + escapeHtml(formatValue(data)) + '</td></tr></tbody></table>';
+        }
+        const rows = Object.keys(data).map(key => {
+            return '<tr><th>' + escapeHtml(key) + '</th><td>' + escapeHtml(formatValue(data[key])) + '</td></tr>';
+        }).join('');
+        return '<table><tbody>' + rows + '</tbody></table>';
+    }
+
+    function flatten(source, prefix, target) {
+        const result = target || {};
+        Object.keys(source || {}).forEach(key => {
+            const value = source[key];
+            const nextKey = prefix ? prefix + '.' + key : key;
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
+                flatten(value, nextKey, result);
+            } else {
+                result[nextKey] = value;
+            }
+        });
+        return result;
+    }
+
+    function formatValue(value) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+        if (typeof value === 'object') {
+            return JSON.stringify(value);
+        }
+        return String(value);
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function query(params) {
+        const searchParams = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            const value = params[key];
+            if (value !== null && value !== undefined && value !== '') {
+                searchParams.append(key, value);
+            }
+        });
+        const value = searchParams.toString();
+        return value ? '?' + value : '';
+    }
+
+    function parseBody(text) {
+        if (!text) {
+            return {};
+        }
+        try {
+            return JSON.parse(text);
+        } catch (error) {
+            return {message: text};
+        }
+    }
+
+    function api(method, path, body) {
+        const started = performance.now();
+        const headers = {};
+        if (jwt) {
+            headers.Authorization = 'Bearer ' + jwt;
+        }
+        if (body !== undefined) {
+            headers['Content-Type'] = 'application/json';
+        }
+
+        setBusy(true);
+        return fetch(path, {
+            method: method,
+            headers: headers,
+            body: body === undefined ? undefined : JSON.stringify(body)
+        })
+            .then(response => response.text().then(text => {
+                const data = parseBody(text);
+                const payload = response.ok ? data : {status: response.status, error: data};
+                print(method, path, response.status, payload, Math.round(performance.now() - started));
+                return payload;
+            }))
+            .catch(error => {
+                const payload = {error: String(error)};
+                print(method, path, 0, payload, Math.round(performance.now() - started));
+                return payload;
+            })
+            .finally(() => setBusy(false));
+    }
+
+    function authenticate() {
+        api('POST', '/api/clients/auth', {
+            login: valueOf('login'),
+            password: valueOf('password')
+        }).then(data => {
+            jwt = data.jwt || '';
+            if (jwt) {
+                localStorage.setItem('libraryJwt', jwt);
+                authDebug();
+            } else {
+                localStorage.removeItem('libraryJwt');
+                updateStatus();
+            }
+        });
+    }
+
+    function clearJwt() {
+        jwt = '';
+        localStorage.removeItem('libraryJwt');
+        updateStatus();
+        print('LOCAL', 'clearJwt', 200, {message: 'JWT cleared'}, 0);
+    }
+
+    function authDebug() {
+        api('GET', '/api/clients/debug/auth').then(data => {
+            if (data && data.name) {
+                updateStatus(data.name + ' ' + formatValue(data.authorities));
+            } else {
+                updateStatus();
+            }
+        });
+    }
+
+    function registerClient() {
+        api('POST', '/api/clients', {
+            login: valueOf('registerLogin'),
+            password: valueOf('registerPassword'),
+            fullName: valueOf('registerFullName'),
+            birthDate: valueOf('registerBirthDate')
+        });
+    }
+
+    function searchBooks() {
+        api('GET', '/api/books/search' + query({
+            title: valueOf('bookSearchTitle'),
+            author: valueOf('bookSearchAuthor'),
+            pageNumber: valueOf('bookPageNumber'),
+            pageSize: valueOf('bookPageSize')
+        }));
+    }
+
+    function getBookById() {
+        api('GET', '/api/books/' + valueOf('bookId'));
+    }
+
+    function createBook() {
+        api('POST', '/api/books', bookPayload());
+    }
+
+    function updateBook() {
+        api('PUT', '/api/books/' + valueOf('bookUpdateId'), bookPayload());
+    }
+
+    function bookPayload() {
+        return {
+            title: valueOf('bookTitle'),
+            author: valueOf('bookAuthor'),
+            isbn: valueOf('bookIsbn')
+        };
+    }
+
+    function searchClients() {
+        api('GET', '/api/clients/search' + query({
+            fullName: valueOf('clientSearchFullName'),
+            pageNumber: valueOf('clientPageNumber'),
+            pageSize: valueOf('clientPageSize')
+        }));
+    }
+
+    function getClientById() {
+        api('GET', '/api/clients/' + valueOf('clientId'));
+    }
+
+    function updateClient() {
+        api('PUT', '/api/clients/' + valueOf('clientUpdateId'), {
+            fullName: valueOf('clientFullName'),
+            birthDate: valueOf('clientBirthDate')
+        });
+    }
+
+    function activeReaders() {
+        api('GET', '/api/lendings/active-readers' + query({
+            pageNumber: valueOf('lendingPageNumber'),
+            pageSize: valueOf('lendingPageSize')
+        }));
+    }
+
+    function getLendingById() {
+        api('GET', '/api/lendings/' + valueOf('lendingId'));
+    }
+
+    function createLending() {
+        const payload = {
+            clientId: Number(valueOf('lendingClientId')),
+            bookId: Number(valueOf('lendingBookId'))
+        };
+        const takenAt = valueOf('lendingTakenAt');
+        if (takenAt) {
+            payload.takenAt = takenAt;
+        }
+        api('POST', '/api/lendings', payload);
+    }
+
+    function returnLending() {
+        api('PATCH', '/api/lendings/' + valueOf('lendingId') + '/return');
+    }
+</script>
+</body>
+</html>

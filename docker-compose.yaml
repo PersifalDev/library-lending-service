@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: library-lending-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_LIBRARY_DB}
+      POSTGRES_USER: ${POSTGRES_LIBRARY_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_LIBRARY_PASSWORD}
+      TZ: ${APP_TIMEZONE}
+    ports:
+      - "${POSTGRES_LIBRARY_DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: library-lending-redis
+    restart: unless-stopped
+    ports:
+      - "${LIBRARY_REDIS_PORT}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: library-lending-service
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: ${APP_TIMEZONE}
+      JAVA_TOOL_OPTIONS: -Duser.timezone=${APP_TIMEZONE}
+      LIBRARY_SERVER_PORT: 8090
+      LIBRARY_DB_URL: jdbc:postgresql://db:5432/${POSTGRES_LIBRARY_DB}
+      LIBRARY_REDIS_HOST: redis
+      LIBRARY_REDIS_PORT: 6379
+      LIBRARY_OPENAPI_SERVER_URL: http://localhost:${LIBRARY_SERVER_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${LIBRARY_SERVER_PORT}:8090"
+
+volumes:
+  postgres_data:

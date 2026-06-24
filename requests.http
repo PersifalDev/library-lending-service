@@ -1,0 +1,321 @@
+@host = http://localhost:8090
+@adminLogin = admin
+@adminPassword = admin_password
+@userLogin = pavlov
+@userPassword = pavlov_password
+
+### Register client
+POST {{host}}/api/clients
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.1
+
+{
+  "login": "tester-{{$timestamp}}",
+  "password": "tester_password",
+  "fullName": "Test Client",
+  "birthDate": "1999-05-20"
+}
+
+### Authenticate admin client
+# @name adminAuth
+POST {{host}}/api/clients/auth
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.2
+
+{
+  "login": "{{adminLogin}}",
+  "password": "{{adminPassword}}"
+}
+
+> {%
+    client.global.set("adminJwt", response.body.jwt);
+%}
+
+### Authenticate user client
+# @name userAuth
+POST {{host}}/api/clients/auth
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.3
+
+{
+  "login": "{{userLogin}}",
+  "password": "{{userPassword}}"
+}
+
+> {%
+    client.global.set("userJwt", response.body.jwt);
+%}
+
+### Debug current auth without token
+GET {{host}}/api/clients/debug/auth
+X-Forwarded-For: 127.0.10.4
+
+### Debug current auth as admin
+GET {{host}}/api/clients/debug/auth
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.10.5
+
+### Get client by id as admin
+GET {{host}}/api/clients/1
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.10.6
+
+### Search clients as admin
+GET {{host}}/api/clients/search?fullName=ivan&pageNumber=0&pageSize=10
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.10.7
+
+### Update client as admin
+PUT {{host}}/api/clients/1
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.8
+
+{
+  "fullName": "Ivan Petrov",
+  "birthDate": "1998-03-14"
+}
+
+### Create book as admin
+# @name createdBook
+POST {{host}}/api/books
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.9
+
+{
+  "title": "Requests Test Book",
+  "author": "Requests Test Author",
+  "isbn": "requests-isbn-{{$timestamp}}"
+}
+
+> {%
+    client.global.set("bookId", response.body.id);
+%}
+
+### Get book by id
+GET {{host}}/api/books/1
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.10.10
+
+### Search books
+GET {{host}}/api/books/search?title=java&author=&pageNumber=0&pageSize=10
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.10.11
+
+### Update book as admin
+PUT {{host}}/api/books/1
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.12
+
+{
+  "title": "Clean Code",
+  "author": "Robert C. Martin",
+  "isbn": "9780132350884"
+}
+
+### Create lending
+# @name createdLending
+POST {{host}}/api/lendings
+Authorization: Bearer {{userJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.10.13
+
+{
+  "clientId": 1,
+  "bookId": {{bookId}},
+  "takenAt": "2026-06-24T12:00:00"
+}
+
+> {%
+    client.global.set("lendingId", response.body.id);
+%}
+
+### Get lending by id
+GET {{host}}/api/lendings/{{lendingId}}
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.10.14
+
+### Return lending
+PATCH {{host}}/api/lendings/{{lendingId}}/return
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.10.15
+
+### Active readers report
+GET {{host}}/api/lendings/active-readers?pageNumber=0&pageSize=10
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.10.16
+
+### Negative: authenticate with wrong password
+POST {{host}}/api/clients/auth
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.1
+
+{
+  "login": "{{adminLogin}}",
+  "password": "wrong_password"
+}
+
+### Negative: authenticate with invalid body
+POST {{host}}/api/clients/auth
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.2
+
+{
+  "login": "",
+  "password": ""
+}
+
+### Negative: create invalid client
+POST {{host}}/api/clients
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.3
+
+{
+  "login": "",
+  "password": "",
+  "fullName": "",
+  "birthDate": "2030-01-01"
+}
+
+### Negative: get clients as user should be forbidden
+GET {{host}}/api/clients/search?pageNumber=0&pageSize=10
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.4
+
+### Negative: get client with invalid id type
+GET {{host}}/api/clients/not-a-number
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.11.5
+
+### Negative: get client with zero id
+GET {{host}}/api/clients/0
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.11.51
+
+### Negative: update client with negative id
+PUT {{host}}/api/clients/-1
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.52
+
+{
+  "fullName": "Invalid Client",
+  "birthDate": "1998-03-14"
+}
+
+### Negative: get missing client
+GET {{host}}/api/clients/999999
+Authorization: Bearer {{adminJwt}}
+X-Forwarded-For: 127.0.11.6
+
+### Negative: create invalid book
+POST {{host}}/api/books
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.7
+
+{
+  "title": "",
+  "author": "",
+  "isbn": ""
+}
+
+### Negative: create book as user should be forbidden
+POST {{host}}/api/books
+Authorization: Bearer {{userJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.8
+
+{
+  "title": "Forbidden Book",
+  "author": "Forbidden Author",
+  "isbn": "forbidden-isbn-{{$timestamp}}"
+}
+
+### Negative: create duplicate ISBN
+POST {{host}}/api/books
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.9
+
+{
+  "title": "Duplicate Clean Code",
+  "author": "Robert C. Martin",
+  "isbn": "9780132350884"
+}
+
+### Negative: get missing book
+GET {{host}}/api/books/999999
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.10
+
+### Negative: get book with zero id
+GET {{host}}/api/books/0
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.101
+
+### Negative: update book with negative id
+PUT {{host}}/api/books/-1
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.102
+
+{
+  "title": "Invalid Book",
+  "author": "Invalid Author",
+  "isbn": "invalid-negative-book"
+}
+
+### Negative: create invalid lending
+POST {{host}}/api/lendings
+Authorization: Bearer {{userJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.11
+
+{}
+
+### Negative: create lending with zero and negative ids
+POST {{host}}/api/lendings
+Authorization: Bearer {{userJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.111
+
+{
+  "clientId": 0,
+  "bookId": -1
+}
+
+### Negative: create lending with missing book
+POST {{host}}/api/lendings
+Authorization: Bearer {{userJwt}}
+Content-Type: application/json
+X-Forwarded-For: 127.0.11.12
+
+{
+  "clientId": 1,
+  "bookId": 999999,
+  "takenAt": "2026-06-24T12:00:00"
+}
+
+### Negative: get missing lending
+GET {{host}}/api/lendings/999999
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.13
+
+### Negative: get lending with zero id
+GET {{host}}/api/lendings/0
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.131
+
+### Negative: return lending with negative id
+PATCH {{host}}/api/lendings/-1/return
+Authorization: Bearer {{userJwt}}
+X-Forwarded-For: 127.0.11.132
+
+### Rate limit check
+# Run this request 61 times with the same X-Forwarded-For value.
+# Requests 1..60 should return 200, request 61 should return 429.
+GET {{host}}/api/clients/debug/auth
+X-Forwarded-For: 127.0.12.1

@@ -1,0 +1,28 @@
+INSERT INTO clients (login, password, full_name, birth_date, client_role, created_at, updated_at)
+VALUES
+    ('client01', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Ivan Petrov', '1998-03-14', 'USER', now(), now()),
+    ('client02', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Anna Sidorova', '2001-11-02', 'USER', now(), now()),
+    ('client03', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Pavel Smirnov', '1995-07-22', 'USER', now(), now()),
+    ('client04', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Sergey Ivanov', '1999-05-20', 'USER', now(), now()),
+    ('client05', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Maria Kuznetsova', '1997-12-01', 'USER', now(), now()),
+    ('client06', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Dmitry Orlov', '1994-02-18', 'USER', now(), now()),
+    ('client07', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Elena Morozova', '2000-09-09', 'USER', now(), now()),
+    ('client08', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Alexey Fedorov', '1993-04-25', 'USER', now(), now()),
+    ('client09', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Olga Volkova', '1996-08-11', 'USER', now(), now()),
+    ('client10', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Nikita Pavlov', '2002-01-30', 'USER', now(), now()),
+    ('client11', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Daria Mikhailova', '1998-10-13', 'USER', now(), now()),
+    ('client12', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Andrey Novikov', '1991-06-06', 'USER', now(), now()),
+    ('client13', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Polina Vasilyeva', '2003-03-03', 'USER', now(), now()),
+    ('client14', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Roman Sokolov', '1992-07-17', 'USER', now(), now()),
+    ('client15', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Ksenia Lebedeva', '1999-12-24', 'USER', now(), now()),
+    ('client16', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Viktor Kozlov', '1989-05-05', 'USER', now(), now()),
+    ('client17', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Yulia Zaitseva', '1997-09-21', 'USER', now(), now()),
+    ('client18', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Mikhail Egorov', '1990-11-15', 'USER', now(), now()),
+    ('client19', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Alina Nikolaeva', '2001-02-27', 'USER', now(), now()),
+    ('client20', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Kirill Stepanov', '1996-01-19', 'USER', now(), now()),
+    ('client21', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Sofia Andreeva', '2000-04-08', 'USER', now(), now()),
+    ('client22', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Anton Vinogradov', '1995-10-29', 'USER', now(), now()),
+    ('client23', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Irina Belova', '1994-12-12', 'USER', now(), now()),
+    ('client24', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Oleg Tarasov', '1988-06-23', 'USER', now(), now()),
+    ('client25', '$2a$10$vPzcVgj1qTa6DmHnpX0s6eRUsQkV6VZx1c8JmUDIwvyKnxVXVJjoC', 'Natalia Komarova', '1993-08-28', 'USER', now(), now())
+ON CONFLICT (login) DO NOTHING;
