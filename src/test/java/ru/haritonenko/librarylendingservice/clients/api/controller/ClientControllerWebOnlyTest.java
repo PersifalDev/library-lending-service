@@ -16,8 +16,8 @@ import ru.haritonenko.librarylendingservice.clients.api.dto.ClientResponseDto;
 import ru.haritonenko.librarylendingservice.clients.api.dto.ClientUpdateRequestDto;
 import ru.haritonenko.librarylendingservice.clients.api.dto.authorization.ClientCredentials;
 import ru.haritonenko.librarylendingservice.clients.domain.Client;
+import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientAlreadyExistsException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientNotFoundException;
-import ru.haritonenko.librarylendingservice.clients.domain.exception.IllegalClientArgumentException;
 import ru.haritonenko.librarylendingservice.clients.domain.mapper.ClientMapper;
 import ru.haritonenko.librarylendingservice.clients.domain.role.ClientRole;
 import ru.haritonenko.librarylendingservice.clients.domain.service.ClientService;
@@ -241,17 +241,17 @@ public class ClientControllerWebOnlyTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenClientLoginAlreadyExists() throws Exception {
+    void shouldReturnConflictWhenClientLoginAlreadyExists() throws Exception {
         ClientCreateRequestDto requestDto = createClientRequest("client", "password", "Client");
 
         when(clientService.createClient(any(ClientCreateRequestDto.class)))
-                .thenThrow(new IllegalClientArgumentException("Client with login=client is already registered"));
+                .thenThrow(new ClientAlreadyExistsException("Client with login=client is already registered"));
 
         mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Client argument error"));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Client already exists"));
     }
 
     @Test

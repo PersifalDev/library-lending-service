@@ -13,6 +13,7 @@ import ru.haritonenko.librarylendingservice.clients.api.dto.ClientUpdateRequestD
 import ru.haritonenko.librarylendingservice.clients.domain.Client;
 import ru.haritonenko.librarylendingservice.clients.domain.db.entity.ClientEntity;
 import ru.haritonenko.librarylendingservice.clients.domain.db.repository.ClientRepository;
+import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientAlreadyExistsException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientNotFoundException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.IllegalClientArgumentException;
 import ru.haritonenko.librarylendingservice.clients.domain.mapper.ClientMapper;
@@ -63,7 +64,7 @@ public class ClientService {
         }
         if (clientRepository.existsByLogin(requestDto.getLogin())) {
             log.warn("Client with login={} already exists", requestDto.getLogin());
-            throw new IllegalClientArgumentException(
+            throw new ClientAlreadyExistsException(
                     String.format("Client with login=%s is already registered", requestDto.getLogin())
             );
         }

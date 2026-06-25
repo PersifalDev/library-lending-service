@@ -16,6 +16,7 @@ import ru.haritonenko.librarylendingservice.clients.api.dto.ClientUpdateRequestD
 import ru.haritonenko.librarylendingservice.clients.domain.Client;
 import ru.haritonenko.librarylendingservice.clients.domain.db.entity.ClientEntity;
 import ru.haritonenko.librarylendingservice.clients.domain.db.repository.ClientRepository;
+import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientAlreadyExistsException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientNotFoundException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.IllegalClientArgumentException;
 import ru.haritonenko.librarylendingservice.clients.domain.mapper.ClientMapper;
@@ -200,11 +201,11 @@ public class ClientServiceUnitTest {
     }
 
     @Test
-    void shouldThrowIllegalClientArgumentExceptionWhenClientWithLoginAlreadyExists() {
+    void shouldThrowClientAlreadyExistsExceptionWhenClientWithLoginAlreadyExists() {
         when(clientRepository.existsByLogin("client")).thenReturn(true);
 
-        IllegalClientArgumentException exception = assertThrows(
-                IllegalClientArgumentException.class,
+        ClientAlreadyExistsException exception = assertThrows(
+                ClientAlreadyExistsException.class,
                 () -> clientService.createClient(clientCreateRequestDto)
         );
 

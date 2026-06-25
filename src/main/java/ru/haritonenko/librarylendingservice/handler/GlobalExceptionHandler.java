@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import ru.haritonenko.librarylendingservice.books.domain.exception.BookAlreadyExistsException;
 import ru.haritonenko.librarylendingservice.books.domain.exception.BookNotFoundException;
 import ru.haritonenko.librarylendingservice.books.domain.exception.IllegalBookArgumentException;
+import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientAlreadyExistsException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.ClientNotFoundException;
 import ru.haritonenko.librarylendingservice.clients.domain.exception.IllegalClientArgumentException;
 import ru.haritonenko.librarylendingservice.handler.error.ErrorMessageResponse;
@@ -105,6 +106,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleIllegalClientArgumentException(IllegalClientArgumentException ex) {
         log.warn("Invalid client argument: {}", ex.getMessage(), ex);
         return buildResponse(HttpStatus.BAD_REQUEST, "Client argument error", ex.getMessage());
+    }
+
+    @ExceptionHandler(ClientAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessageResponse> handleClientAlreadyExistsException(ClientAlreadyExistsException ex) {
+        log.warn("Client already exists: {}", ex.getMessage(), ex);
+        return buildResponse(HttpStatus.CONFLICT, "Client already exists", ex.getMessage());
     }
 
     @ExceptionHandler(LendingNotFoundException.class)
