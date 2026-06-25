@@ -7,39 +7,39 @@ databaseChangeLog:
         - sqlFile:
             path: db/changelog/sql/001-create-table-books.sql
   - changeSet:
-      id: 003-create-table-clients
+      id: 002-create-table-clients
       author: haritonenko
       validCheckSum: 8:d713e568c48d0914a2e6de7f04233ddb
       changes:
         - sqlFile:
             path: db/changelog/sql/002-create-table-clients.sql
   - changeSet:
-      id: 004-create-table-lendings
+      id: 003-create-table-lendings
       author: haritonenko
       validCheckSum: 8:dde3b553eea493c126c039c467c98f57
       changes:
         - sqlFile:
             path: db/changelog/sql/003-create-table-lendings.sql
   - changeSet:
-      id: 005-seed-books
+      id: 004-seed-books
       author: haritonenko
       changes:
         - sqlFile:
             path: db/changelog/sql/004-seed-books.sql
   - changeSet:
-      id: 006-seed-clients
+      id: 005-seed-clients
       author: haritonenko
       changes:
         - sqlFile:
             path: db/changelog/sql/005-seed-clients.sql
   - changeSet:
-      id: 007-seed-lendings
+      id: 006-seed-lendings
       author: haritonenko
       changes:
         - sqlFile:
             path: db/changelog/sql/006-seed-lendings.sql
   - changeSet:
-      id: 008-drop-redundant-client-indexes
+      id: 007-drop-redundant-client-indexes
       author: haritonenko
       changes:
         - sqlFile:
